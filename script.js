@@ -10,6 +10,18 @@ gooi.addEventListener("click",(target)=>{
     var worpen = [];
     var pointsPart1 = 0;
     var totalPointsPart1 = 0;
+    var points = 0;
+
+    var specialScore = {
+        threeOfAKind:0,
+        fourOfAKind:0,
+        fullHouse:0,
+        smallStraight:0,
+        largeSraight:0,
+        yahtzee:0,
+        chance:0
+    }
+
     const worpOgen = {
         1:0,
         2:0,
@@ -27,12 +39,42 @@ gooi.addEventListener("click",(target)=>{
             worpOgen[worp]++;
         }
     }
-    
-    for(i=0;i<6;i++){
-        var points = worpOgen[i+1]*(i+1);
-        part1.rows[i].cells[2].innerHTML = points;
-        pointsPart1 += points;
+
+    pointsPart1 = Object.values(worpen).reduce((a,b) => {return a+b;},0);
+    const worpOgenEntries = Object.entries(worpOgen);
+    const specialScoreKeys = Object.keys(specialScore);
+
+    let uniqueEyes = 0;
+    for(const [eye,count] of worpOgenEntries){
+        let score = eye*count;
+        part1.rows[eye-1].cells[2+throws].innerHTML = score;
+        if(count == 1){
+            uniqueEyes++;
+        }else if(count == 3){
+            specialScore["threeOfAKind"] = pointsPart1;
+        }else if(count == 4){
+            specialScore["fourOfAKind"] = pointsPart1;
+        }else if(count == 5){
+            specialScore["yahtzee"] = 50;
+        }
+        if(uniqueEyes == 5){
+            specialScore["largeSraight"] = 40;
+        }
+        if(uniqueEyes == 3 && true){
+            specialScore["smallStraight"] = 30;
+        }
     }
+
+    specialScore["chance"] = pointsPart1;
+
+    for(var i = 0; i<specialScoreKeys.length;i++){
+        part2.rows[i].cells[2+throws].innerHTML = specialScore[specialScoreKeys[i]];
+    }
+
+    /* Debug */
+    console.log(Math.max(...worpen));
+    console.log(Math.min(...worpen));
+    console.log("##################");
 
     p1points.innerHTML = pointsPart1;
     totalPointsPart1 = pointsPart1;
@@ -43,3 +85,4 @@ gooi.addEventListener("click",(target)=>{
 
     p1TotalPoints.innerHTML = totalPointsPart1;
 })
+
