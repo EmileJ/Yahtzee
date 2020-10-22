@@ -1,10 +1,6 @@
 var gooi = document.getElementById("btn");
-var worpTabel = document.getElementById('worp').cells;
-var part1 = document.getElementById("part1");
-var part2 = document.getElementById("part2");
-var total = document.getElementById('total');
-var upperTotal = document.getElementById('upperTotal');
-var throws = 0;
+
+var currentGame = 1;
 
 gooi.addEventListener("click",(target)=>{
     var worpen = [];
@@ -64,7 +60,7 @@ gooi.addEventListener("click",(target)=>{
     if(uniqueEyes == 2 && highestCount == 3){
         specialScore["fullHouse"] = 25;
     }else if(uniqueEyes == 4){
-        if(CheckStrait(worpen)){
+        if(CheckStraight(worpen)){
             specialScore["smallStraight"] = 30;
         }
     }else if(uniqueEyes == 5){
@@ -87,7 +83,7 @@ gooi.addEventListener("click",(target)=>{
     upperTotal.innerHTML = totalPointsPart1;
 })
 
-var CheckStrait = (val) =>{
+var CheckStraight = (val) =>{
     if(Array.isArray(val) && val.length == 5){
         var min = Math.min(...val);
         var max = Math.max(...val);
