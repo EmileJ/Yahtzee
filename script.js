@@ -1,9 +1,9 @@
-var gooi = document.getElementById("gooi");
+var gooi = document.getElementById("btn");
 var worpTabel = document.getElementById('worp').cells;
 var part1 = document.getElementById("part1");
 var part2 = document.getElementById("part2");
-var p1points = document.getElementById('pointsPart1');
-var p1TotalPoints = document.getElementById('totalPointsPart1');
+var total = document.getElementById('total');
+var upperTotal = document.getElementById('upperTotal');
 var throws = 0;
 
 gooi.addEventListener("click",(target)=>{
@@ -49,7 +49,6 @@ gooi.addEventListener("click",(target)=>{
     for(const [eye,count] of worpOgenEntries){
         if(count>highestCount) highestCount = count;
         let score = eye*count;
-        part1.rows[eye-1].cells[2+throws].innerHTML = score;
         if(count > 0){
             uniqueEyes++;
         }
@@ -60,9 +59,6 @@ gooi.addEventListener("click",(target)=>{
         }else if(count == 5){
             specialScore["yahtzee"] = 50;
         }
-        if(uniqueEyes == 5){
-            specialScore["largeSraight"] = 40;
-        }
     }
 
     if(uniqueEyes == 2 && highestCount == 3){
@@ -71,6 +67,8 @@ gooi.addEventListener("click",(target)=>{
         if(CheckStrait(worpen)){
             specialScore["smallStraight"] = 30;
         }
+    }else if(uniqueEyes == 5){
+        specialScore["largeSraight"] = 40;
     }
 
     specialScore["chance"] = pointsPart1;
@@ -79,14 +77,14 @@ gooi.addEventListener("click",(target)=>{
         part2.rows[i].cells[2+throws].innerHTML = specialScore[specialScoreKeys[i]];
     }
 
-    p1points.innerHTML = pointsPart1;
+    total.innerHTML = pointsPart1;
     totalPointsPart1 = pointsPart1;
 
     if(pointsPart1 >= 63){
         totalPointsPart1 += 35;
     }
 
-    p1TotalPoints.innerHTML = totalPointsPart1;
+    upperTotal.innerHTML = totalPointsPart1;
 })
 
 var CheckStrait = (val) =>{
@@ -95,8 +93,7 @@ var CheckStrait = (val) =>{
         var max = Math.max(...val);
 
         if(min+3==max) return true;
-
-        if(min==1&&max==6){
+        else if(min==1&&max==6){
             if(val.includes(min+1)&&val.includes(max-1)){
                 return true;
             }else if(val.includes(min+1)&&val.includes(min+2)) {

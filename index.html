@@ -1,128 +1,257 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
+
 <head>
-    <meta charset="UTF-8">
+    <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Opdracht 13 - JavaScript Yahtzee</title>
+    <title></title>
     <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Anton&&family=Gloria+Hallelujah&ffamily=Heebo:wght@800&display=swap" rel="stylesheet">
 </head>
+
 <body>
-    <table>
-        <thead>
-            <th>Deel 1</th>
-            <th>Puntentelling</th>
-            <th>Punten</th>
-        </thead>
-        <tbody id="part1">
-            <tr>
-                <td>enen</td>
-                <td>tel alle enen op</td>
-                <td class="points"></td>
-            </tr>
-            <tr>
-                <td>twee&euml;n</td>
-                <td>tel alle twee&euml;n op</td>
-                <td class="points"></td>
-            </tr>
-            <tr>
-                <td>drie&euml;n</td>
-                <td>tel alle drie&euml;n op</td>
-                <td class="points"></td>
-            </tr>
-            <tr>
-                <td>vieren</td>
-                <td>tel alle vieren op</td>
-                <td class="points"></td>
-            </tr>
-            <tr>
-                <td>vijven</td>
-                <td>tel alle vijven op</td>
-                <td class="points"></td>
-            </tr>
-            <tr>
-                <td>zessen</td>
-                <td>tel alle zessen op</td>
-                <td class="points"></td>
-            </tr>
-            <tr>
-                <td colspan="2">totaal aantal punten</td>
-                <td id="pointsPart1"></td>
-            </tr>
-            <tr>
-                <td>extra bonus als puntentotaal 63 of meer is</td>
-                <td>+35 punten</td>
-                <td id="bonusPoints"></td>
-            </tr>
-            <tr>
-                <td colspan="2">totaal van de bovenste helft</td>
-                <td id="totalPointsPart1"></td>
-            </tr>
-        </tbody>
-        <thead>
-            <th colspan="3">Deel 2</th>
-        </thead>
-        <tbody id="part2">
-            <tr>
-                <td>Three of a kind</td>
-                <td>totaal v.d. 5 stenen</td>
-                <td></td>
-            </tr>
-            <tr>
-                <td>Carré</td>
-                <td>totaal v.d. 5 stenen</td>
-                <td></td>
-            </tr>
-            <tr>
-                <td>Full house</td>
-                <td>25 punten</td>
-                <td></td>
-            </tr>
-            <tr>
-                <td>Kleine straat</td>
-                <td>30 punten</td>
-                <td></td>
-            </tr>
-            <tr>
-                <td>Grote straat</td>
-                <td>40 punten</td>
-                <td></td>
-            </tr>
-            <tr>
-                <td>Yahtzee</td>
-                <td>50 punten</td>
-                <td></td>
-            </tr>
-            <tr>
-                <td>Chance</td>
-                <td>totaal v.d. 5 stenen</td>
-                <td></td>
-            </tr>
-            <tr>
-                <td colspan="2">totaal deel 2</td>
-                <td></td>
-            </tr>
-            <tr>
-                <td colspan="2">totaal deel 1</td>
-                <td></td>
-            </tr>
-            <tr>
-                <td colspan="2">totaal</td>
-                <td></td>
-            </tr>
-        </tbody>
-    </table>
+    <div id="container">
+        <header>
+            <h1>Yathzee</h1>
+        </header>
 
-    <button id="gooi">Gooien</button>
+        <div class="fiveDice">
+            <button id="dice1" class="dice textHover">&#x2680;</button>
+            <button id="dice2" class="dice textHover">&#x2681;</button>
+            <button id="dice3" class="dice textHover">&#x2682;</button>
+            <button id="dice4" class="dice textHover">&#x2683;</button>
+            <button id="dice5" class="dice textHover">&#x2684;</button>
+        </div>
 
-    <table>
-        <tr id="worp">
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-        </tr>
-    </table>
-    <script src="script.js"></script>
+        <div class="button">
+            <button id="btn" class="btn wHover">Gooien</button>
+            <button id="btnFill" class="btn wHover">Vul score in</button>
+        </div>
+
+        <div class="round">
+            <p id="rounds"></p>
+        </div>
+
+        <div class="howTo">
+            <p>Klik <span class="borderBtn">Gooien</span> om de dobbelstenen te gooien, klik op een dobbelsteen om de waarde vast te houden.</p>
+            <p>Na drie worpen klik je op <span class="borderBtn">Vul score in</span> om de score in te vullen.</p>
+            <p>Kies welke score je wil vastleggen op het scoreblok.</p>
+        </div>
+
+        <div class="paper">
+            <table>
+                <tr>
+                    <td class="noBorder"></td>
+                </tr>
+                <tr>
+                    <th class="title noBorder" colspan="7">scoreblok</th>
+                    <th class="title noBorder"><img class="posImg" src="images/dice.png"></th>
+                </tr>
+                <tr>
+                    <td class="noBorder"></td>
+                </tr>
+                <tr>
+                    <th class="h1 noBorder" colspan="2">deel 1</th>
+                    <th class="h1 noBorder">hoe te scoren</th>
+                    <th class="h2 noBorder">Spel 1</th>
+                    <th class="h2 noBorder">Spel 2</th>
+                    <th class="h2 noBorder">Spel 3</th>
+                    <th class="h2 noBorder">Spel 4</th>
+                    <th class="h2 noBorder">Spel 5</th>
+                </tr>
+                <tr>
+                    <td class="noBorderRight">enen</td>
+                    <td class="dicePreview noBorderLeft">&#x2680;</td>
+                    <td class="howToScore">waarde van alle enen</td>
+                    <td id="aces1" class="fillFont keepScore"></td>
+                    <td id="aces2" class="fillFont keepScore"></td>
+                    <td id="aces3" class="fillFont keepScore"></td>
+                    <td id="aces4" class="fillFont keepScore"></td>
+                    <td id="aces5" class="fillFont keepScore"></td>
+                </tr>
+                <tr>
+                    <td class="noBorderRight">tweeën</td>
+                    <td class="dicePreview noBorderLeft">&#x2681;</td>
+                    <td class="howToScore">waarde van alle tweeën</td>
+                    <td id="twos1" class="fillFont keepScore"></td>
+                    <td id="twos2" class="fillFont keepScore"></td>
+                    <td id="twos3" class="fillFont keepScore"></td>
+                    <td id="twos4" class="fillFont keepScore"></td>
+                    <td id="twos5" class="fillFont keepScore"></td>
+                </tr>
+                <tr>
+                    <td class="noBorderRight">drieën</td>
+                    <td class="dicePreview noBorderLeft">&#x2682;</td>
+                    <td class="howToScore">waarde van alle drieën</td>
+                    <td id="threes1" class="fillFont keepScore"></td>
+                    <td id="threes2" class="fillFont keepScore"></td>
+                    <td id="threes3" class="fillFont keepScore"></td>
+                    <td id="threes4" class="fillFont keepScore"></td>
+                    <td id="threes5" class="fillFont keepScore"></td>
+                </tr>
+                <tr>
+                    <td class="noBorderRight">vieren</td>
+                    <td class="dicePreview noBorderLeft">&#x2683;</td>
+                    <td class="howToScore">waarde van alle vieren</td>
+                    <td id="fours1" class="fillFont keepScore"></td>
+                    <td id="fours2" class="fillFont keepScore"></td>
+                    <td id="fours3" class="fillFont keepScore"></td>
+                    <td id="fours4" class="fillFont keepScore"></td>
+                    <td id="fours5" class="fillFont keepScore"></td>
+                </tr>
+                <tr>
+                    <td class="noBorderRight">vijven</td>
+                    <td class="dicePreview noBorderLeft">&#x2684;</td>
+                    <td class="howToScore">waarde van alle vijven</td>
+                    <td id="fives1" class="fillFont keepScore"></td>
+                    <td id="fives2" class="fillFont keepScore"></td>
+                    <td id="fives3" class="fillFont keepScore"></td>
+                    <td id="fives4" class="fillFont keepScore"></td>
+                    <td id="fives5" class="fillFont keepScore"></td>
+                </tr>
+                <tr>
+                    <td class="noBorderRight">zessen</td>
+                    <td class="dicePreview noBorderLeft">&#x2685;</td>
+                    <td class="howToScore">waarde van alle zessen</td>
+                    <td id="sixes1" class="fillFont keepScore"></td>
+                    <td id="sixes2" class="fillFont keepScore"></td>
+                    <td id="sixes3" class="fillFont keepScore"></td>
+                    <td id="sixes4" class="fillFont keepScore"></td>
+                    <td id="sixes5" class="fillFont keepScore"></td>
+                </tr>
+                <tr id="total">
+                    <td class="uppercase" colspan="2">totaal</td>
+                    <td class="arrow">&#10132;</td>
+                    <td id="upperScore1" class="fillFont"></td>
+                    <td id="upperScore2" class="fillFont"></td>
+                    <td id="upperScore3" class="fillFont"></td>
+                    <td id="upperScore4" class="fillFont"></td>
+                    <td id="upperScore5" class="fillFont"></td>
+                </tr>
+                <tr id="bonus">
+                    <td class="noBorderRight">bonus</td>
+                    <td class="alt noBorderLeft">als totaal 63<br>of meer is</td>
+                    <td class="howToScore">35 punten</td>
+                    <td id="bonus1" class="fillFont"></td>
+                    <td id="bonus2" class="fillFont"></td>
+                    <td id="bonus3" class="fillFont"></td>
+                    <td id="bonus4" class="fillFont"></td>
+                    <td id="bonus5" class="fillFont"></td>
+                </tr>
+                <tr id="upperTotal">
+                    <td class="uppercase noBorderRight">totaal</td>
+                    <td class="alt uppercase noBorderLeft">van de<br>bovenste<br>helft</td>
+                    <td class="arrow">&#10132;</td>
+                    <td id="totalUpperScore1" class="fillFont"></td>
+                    <td id="totalUpperScore2" class="fillFont"></td>
+                    <td id="totalUpperScore3" class="fillFont"></td>
+                    <td id="totalUpperScore4" class="fillFont"></td>
+                    <td id="totalUpperScore5" class="fillFont"></td>
+                </tr>
+                <tr>
+                    <th class="h1 noBorder" colspan="2">deel 2</th>
+                </tr>
+
+                <tr>
+                    <td colspan="2">3 of a kind</td>
+                    <td class="howToScore">totaal van alle dobbelstenen</td>
+                    <td id="threeOfKind1" class="fillFont keepScore"></td>
+                    <td id="threeOfKind2" class="fillFont keepScore"></td>
+                    <td id="threeOfKind3" class="fillFont keepScore"></td>
+                    <td id="threeOfKind4" class="fillFont keepScore"></td>
+                    <td id="threeOfKind5" class="fillFont keepScore"></td>
+                </tr>
+                <tr>
+                    <td colspan="2">4 of a kind</td>
+                    <td class="howToScore">totaal van alle dobbelstenen</td>
+                    <td id="fourOfKind1" class="fillFont keepScore"></td>
+                    <td id="fourOfKind2" class="fillFont keepScore"></td>
+                    <td id="fourOfKind3" class="fillFont keepScore"></td>
+                    <td id="fourOfKind4" class="fillFont keepScore"></td>
+                    <td id="fourOfKind5" class="fillFont keepScore"></td>
+                </tr>
+                <tr>
+                    <td colspan="2">full house</td>
+                    <td class="howToScore">25 punten</td>
+                    <td id="fullHouse1" class="fillFont keepScore"></td>
+                    <td id="fullHouse2" class="fillFont keepScore"></td>
+                    <td id="fullHouse3" class="fillFont keepScore"></td>
+                    <td id="fullHouse4" class="fillFont keepScore"></td>
+                    <td id="fullHouse5" class="fillFont keepScore"></td>
+                </tr>
+                <tr>
+                    <td class="noBorderRight">kleine straat</td>
+                    <td class="alt noBorderLeft">4<br>opeenvolgende nummers</td>
+                    <td class="howToScore">30 punten</td>
+                    <td id="smStraight1" class="fillFont keepScore"></td>
+                    <td id="smStraight2" class="fillFont keepScore"></td>
+                    <td id="smStraight3" class="fillFont keepScore"></td>
+                    <td id="smStraight4" class="fillFont keepScore"></td>
+                    <td id="smStraight5" class="fillFont keepScore"></td>
+                </tr>
+                <tr>
+                    <td class="noBorderRight">grote straat</td>
+                    <td class="alt noBorderLeft">5<br>opeenvolgende nummers</td>
+                    <td class="howToScore">40 punten</td>
+                    <td id="lgStraight1" class="fillFont keepScore"></td>
+                    <td id="lgStraight2" class="fillFont keepScore"></td>
+                    <td id="lgStraight3" class="fillFont keepScore"></td>
+                    <td id="lgStraight4" class="fillFont keepScore"></td>
+                    <td id="lgStraight5" class="fillFont keepScore"></td>
+                </tr>
+                <tr>
+                    <td class="noBorderRight">yahtzee</td>
+                    <td class="alt noBorderLeft">5<br>dezelfde<br>nummers</td>
+                    <td class="howToScore">50 punten</td>
+                    <td id="yahtzee1" class="fillFont keepScore"></td>
+                    <td id="yahtzee2" class="fillFont keepScore"></td>
+                    <td id="yahtzee3" class="fillFont keepScore"></td>
+                    <td id="yahtzee4" class="fillFont keepScore"></td>
+                    <td id="yahtzee5" class="fillFont keepScore"></td>
+                </tr>
+                <tr id="chance">
+                    <td colspan="2">chance</td>
+                    <td class="howToScore">totaal van alle dobbelstenen</td>
+                    <td id="chance1" class="fillFont keepScore"></td>
+                    <td id="chance2" class="fillFont keepScore"></td>
+                    <td id="chance3" class="fillFont keepScore"></td>
+                    <td id="chance4" class="fillFont keepScore"></td>
+                    <td id="chance5" class="fillFont keepScore"></td>
+                </tr>
+                <tr id="lowerTotal">
+                    <td class="uppercase noBorderRight">totaal</td>
+                    <td class="alt uppercase noBorderLeft">van de<br>onderste<br>helft</td>
+                    <td class="arrow">&#10132;</td>
+                    <td id="lowerScore1" class="fillFont"></td>
+                    <td id="lowerScore2" class="fillFont"></td>
+                    <td id="lowerScore3" class="fillFont"></td>
+                    <td id="lowerScore4" class="fillFont"></td>
+                    <td id="lowerScore5" class="fillFont"></td>
+                </tr>
+                <tr id="lowUpperTotal">
+                    <td class="uppercase noBorderRight">totaal</td>
+                    <td class="alt uppercase noBorderLeft">van de<br>bovenste<br>helft</td>
+                    <td class="arrow">&#10132;</td>
+                    <td id="upperScoreLower1" class="fillFont"></td>
+                    <td id="upperScoreLower2" class="fillFont"></td>
+                    <td id="upperScoreLower3" class="fillFont"></td>
+                    <td id="upperScoreLower4" class="fillFont"></td>
+                    <td id="upperScoreLower5" class="fillFont"></td>
+                </tr>
+                <tr id="grandTotal">
+                    <td class="bold" colspan="2">totaal generaal</td>
+                    <td class="arrow">&#10132;</td>
+                    <td id="grandTotal1" class="fillFont"></td>
+                    <td id="grandTotal2" class="fillFont"></td>
+                    <td id="grandTotal3" class="fillFont"></td>
+                    <td id="grandTotal4" class="fillFont"></td>
+                    <td id="grandTotal5" class="fillFont"></td>
+                </tr>
+            </table>
+        </div>
+    </div>
+
+    <script type="text/javascript" src="scripts.js"></script>
 </body>
+
 </html>
