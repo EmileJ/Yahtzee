@@ -10,7 +10,7 @@ gooi.addEventListener("click",(target)=>{
     var worpen = [];
     var pointsPart1 = 0;
     var totalPointsPart1 = 0;
-    var points = 0;
+    var highestCount = 0;
 
     var specialScore = {
         threeOfAKind:0,
@@ -45,12 +45,15 @@ gooi.addEventListener("click",(target)=>{
     const specialScoreKeys = Object.keys(specialScore);
 
     let uniqueEyes = 0;
+    
     for(const [eye,count] of worpOgenEntries){
+        if(count>highestCount) highestCount = count;
         let score = eye*count;
         part1.rows[eye-1].cells[2+throws].innerHTML = score;
-        if(count == 1){
+        if(count > 0){
             uniqueEyes++;
-        }else if(count == 3){
+        }
+        if(count == 3){
             specialScore["threeOfAKind"] = pointsPart1;
         }else if(count == 4){
             specialScore["fourOfAKind"] = pointsPart1;
@@ -60,7 +63,12 @@ gooi.addEventListener("click",(target)=>{
         if(uniqueEyes == 5){
             specialScore["largeSraight"] = 40;
         }
-        if(uniqueEyes == 3 && true){
+    }
+
+    if(uniqueEyes == 2 && highestCount == 3){
+        specialScore["fullHouse"] = 25;
+    }else if(uniqueEyes == 4){
+        if(CheckStrait(worpen)){
             specialScore["smallStraight"] = 30;
         }
     }
@@ -71,11 +79,6 @@ gooi.addEventListener("click",(target)=>{
         part2.rows[i].cells[2+throws].innerHTML = specialScore[specialScoreKeys[i]];
     }
 
-    /* Debug */
-    console.log(Math.max(...worpen));
-    console.log(Math.min(...worpen));
-    console.log("##################");
-
     p1points.innerHTML = pointsPart1;
     totalPointsPart1 = pointsPart1;
 
@@ -85,4 +88,27 @@ gooi.addEventListener("click",(target)=>{
 
     p1TotalPoints.innerHTML = totalPointsPart1;
 })
+
+var CheckStrait = (val) =>{
+    if(Array.isArray(val) && val.length == 5){
+        var min = Math.min(...val);
+        var max = Math.max(...val);
+
+        if(min+3==max) return true;
+
+        if(min==1&&max==6){
+            if(val.includes(min+1)&&val.includes(max-1)){
+                return true;
+            }else if(val.includes(min+1)&&val.includes(min+2)) {
+                return true;
+            }else if(val.includes(max-1)&&val.includes(max-2)) {
+                return true;
+            }else{
+                return false;
+            }
+        }else return false;
+    }
+}
+
+
 
