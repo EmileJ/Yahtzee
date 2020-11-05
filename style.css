@@ -339,3 +339,11 @@ td.arrow {
 
 @media only screen and (min-width: 768px) {
 }
+
+.tmpLocked {
+    background-color: thistle;
+}
+
+.locked {
+    background-color: tomato;
+}

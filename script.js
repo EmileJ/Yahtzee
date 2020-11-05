@@ -1,6 +1,48 @@
-var throwBtn = document.getElementById("btn");
+var currentGame = 1;
+var currentTurn = 1;
+var currentThrow = 1;
 
-const dices = {
+const throwBtn = document.getElementById("btn");
+const fillBtn = document.getElementById("btnFill");
+const dices = document.getElementsByClassName("dice");
+const tds = document.getElementsByTagName('td');
+
+var currentGameReg = new RegExp(`[A-z]+[${currentGame}]`);
+var tmpLockedReg = new RegExp("tmpLocked");
+
+for(var td of tds){
+    if(currentGameReg.test(td.id)){
+        document.getElementById(td.id).addEventListener("click",(event)=>{
+            if(tmpLockedReg.test(event.target.className)){
+                event.target.classList.remove("tmpLocked");
+            }else{
+                event.target.classList.add("tmpLocked");
+            }
+        })
+    }
+}
+
+for (var dice of dices){
+    dice.addEventListener("click", (event)=>{console.log(event.target)})
+}
+
+throwBtn.addEventListener("click", (target)=>{
+    const currentPoints = ThrowDice(currentGame);
+    FillPoints(currentPoints);
+})
+
+fillBtn.addEventListener("click", (target)=>{
+    let tmps = document.getElementsByClassName("tmpLocked");
+    console.log(tmps);
+    if(tmps.length == 1 ){
+        tmps[0].classList.add("locked");
+        tmps[0].classList.remove("tmpLocked");
+    }else{
+        alert("selecteer maximaal 1 veld om deze score vast te zetten");
+    }
+})
+
+const diceChars = {
     1:'&#x2680;',
     2:'&#x2681;',
     3:'&#x2682;',
@@ -9,21 +51,53 @@ const dices = {
     6:'&#x2685;',
 }
 
-var currentGame = 1;
-
-const upperScoreTable = {
+const scoreTable = {
     1: document.getElementById(`aces${currentGame}`),
     2: document.getElementById(`twos${currentGame}`),
     3: document.getElementById(`threes${currentGame}`),
     4: document.getElementById(`fours${currentGame}`),
     5: document.getElementById(`fives${currentGame}`),
-    6: document.getElementById(`sixes${currentGame}`)
+    6: document.getElementById(`sixes${currentGame}`),
+    7: document.getElementById(`threeOfKind${currentGame}`),
+    8: document.getElementById(`fourOfKind${currentGame}`),
+    9: document.getElementById(`fullHouse${currentGame}`),
+    10: document.getElementById(`smStraight${currentGame}`),
+    11: document.getElementById(`lgStraight${currentGame}`),
+    12: document.getElementById(`yahtzee${currentGame}`),
+    13: document.getElementById(`chance${currentGame}`)
 }
 
-throwBtn.addEventListener("click",(target)=>{
-    const currentThrow = ThrowDice(currentGame);
-    FillScore(currentThrow);
-})
+const score = {
+    1: 0,
+    2: 0,
+    3: 0,
+    4: 0,
+    5: 0,
+    6: 0,
+    7: 0,
+    8: 0,
+    9: 0,
+    10: 0,
+    11: 0,
+    12: 0,
+    13: 0
+}
+
+const nameTable = {
+    aces:1,
+    twos:2,
+    threes:3,
+    fours:4,
+    fives:5,
+    sixes:6,
+    threeOfAKind: 7,
+    fourOfAKind: 8,
+    fullHouse: 9,
+    smStreet: 10,
+    lgStreet: 11,
+    yahtzee: 12,
+    chance: 13
+}
 
 function ThrowDice(game) {
     var throws = [];
@@ -48,7 +122,7 @@ function ThrowDice(game) {
     console.log(throws);
 
     for (i = 0; i < 5; i++) {
-        document.getElementById(`dice${i + 1}`).innerHTML = dices[throws[i]];
+        document.getElementById(`dice${i + 1}`).innerHTML = diceChars[throws[i]];
     }
 
     const out = {
@@ -59,60 +133,65 @@ function ThrowDice(game) {
     return out;
 }
 
-function FillScore(currentThrow) {
+function FillPoints(currentThrow) {
     let total = 0;
-    let upperTotal = 0;
+
+    for(const value of Object.values(nameTable)){
+        scoreTable[value].innerText = score[value];
+    }
+
+    let testscore = currentThrow.array.reduce((a,b)=> a+b,0);
 
     let highestCount = Math.max(...Object.values(currentThrow.obj));
     let lowestCount = Math.min(...Object.values(currentThrow.obj));
 
     for (const [key, value] of Object.entries(currentThrow.obj)) {
         let score = value * key;
-        upperScoreTable[key].innerHTML = score;
-        total += score;
+        scoreTable[key].innerText = score;
     }
 
-    document.getElementById(`upperScore${currentGame}`).innerText = total;
-    upperTotal = total;
-    if (total >= 63) {
-        document.getElementById(`bonus${currentGame}`).innerText = 35;
-        upperTotal += 35;
-    } else {
-        document.getElementById(`bonus${currentGame}`).innerText = 0;
-    }
-
-    document.getElementById(`totalUpperScore${currentGame}`).innerText = upperTotal;
-
+    // document.getElementById(`upperScore${currentGame}`).innerText = total;
+    // upperTotal = total;
+    // if (total >= 63) {
+    //     document.getElementById(`bonus${currentGame}`).innerText = 35;
+    //     upperTotal += 35;
+    // } else {
+    //     document.getElementById(`bonus${currentGame}`).innerText = 0;
+    // }
 
 
     switch (highestCount) {
         case 1:
-            document.getElementById(`lgStraight${currentGame}`).innerText = 40;
+            scoreTable[nameTable.lgStreet].innerText = 40;
             break;
         case 2:
             if (SmallStraight(currentThrow.array) && getKeyByValue(currentThrow.obj,highestCount).length <2) {
-                document.getElementById(`smStraight${currentGame}`).innerText = 30;
+                scoreTable[nameTable.smStreet].innerText = 30;
             }
             break;
         case 3:
-            /* threekind || if(lowestkind == 2) fullhouse */
             if (lowestCount == 2) {
-                document.getElementById(`fullHouse${currentGame}`).innerText = 25;
+                scoreTable[nameTable.fullHouse].innerText = 25;
             } else {
-                document.getElementById(`threeOfKind${currentGame}`).innerText = total;
+                scoreTable[nameTable.threeOfAKind].innerText = testscore;
             }
             break;
         case 4:
-            document.getElementById(`fourOfKind${currentGame}`).innerText = total;
+            scoreTable[nameTable.fourOfAKind].innerText = testscore;
             break;
         case 5:
-            document.getElementById(`yahtzee${currentGame}`).innerText = 50;
+            scoreTable[nameTable.yahtzee].innerText = 50;
             break;
         default:
+            break;
     }
 }
 
-//klopt nog niet
+function FillScore(scores){
+
+}
+
+//klopt nog niet?
 function SmallStraight(val) {
     if (Array.isArray(val) && val.length == 5) {
         var min = Math.min(...val);
