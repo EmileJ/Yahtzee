@@ -347,3 +347,7 @@ td.arrow {
 .locked {
     background-color: tomato;
 }
+
+.lockedDice {
+    color: gray;
+}
