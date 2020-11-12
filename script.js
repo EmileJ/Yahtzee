@@ -1,5 +1,5 @@
 var gameNumber = 1;
-var turnNumber = 1;
+var turnNumber = 0;
 var throwNumber = 0;
 
 const diceChars = {
@@ -11,7 +11,7 @@ const diceChars = {
     6:'&#x2685;',
 }
 
-const scoreTable = {
+var scoreTable = {
     1: document.getElementById(`aces${gameNumber}`),
     2: document.getElementById(`twos${gameNumber}`),
     3: document.getElementById(`threes${gameNumber}`),
@@ -43,7 +43,7 @@ const score = {
     13: 0
 }
 
-const lockedScore = {
+var lockedScore = {
     1: 0,
     2: 0,
     3: 0,
@@ -80,27 +80,13 @@ var throws = [];
 const throwBtn = document.getElementById("btn");
 const fillBtn = document.getElementById("btnFill");
 const dices = document.getElementsByClassName("dice");
-const tds = document.getElementsByTagName('td');
 
 var currentGameReg = new RegExp(`[A-z]+[${gameNumber}]`);
 var tmpLockedReg = new RegExp("tmpLocked");
 
-for(var td of tds){
+for(var td of Object.values(scoreTable)){
     if(currentGameReg.test(td.id)){ //validation
-        document.getElementById(td.id).addEventListener("click",(event)=>{
-            var lockedClass = document.getElementsByClassName("tmpLocked");
-            if(event.target.classList.contains("tmpLocked")){
-                event.target.classList.remove("tmpLocked");
-            }else if(lockedClass.length > 0){
-                for (let i = 0; i < lockedClass.length; i++) {
-                    lockedClass[i].classList.remove("tmpLocked");
-
-                }
-                event.target.classList.toggle("tmpLocked");
-            }else{
-                event.target.classList.add("tmpLocked");
-            }
-        })
+        document.getElementById(td.id).addEventListener("click",tableClickEventHandler)
     }
 }
 
@@ -115,9 +101,12 @@ throwBtn.addEventListener("click", (target)=>{
     if(tmpLock.length == 1 && throwNumber > 0){
         tmpLock[0].classList.add("locked");
         tmpLock[0].classList.remove("tmpLocked");
+
         FillScore();
         startThrowing();
-        const currentPoints = ThrowDice(gameNumber);
+
+        let currentPoints = ThrowDice(gameNumber);
+
         throwNumber++;
         FillPoints(currentPoints);
     }else if(throwNumber == 3){
@@ -131,18 +120,28 @@ throwBtn.addEventListener("click", (target)=>{
         FillPoints(currentPoints);
     }
     console.log("Worp nummer: "+throwNumber.toString());
+    if(turnNumber >= 13){
+        nextGame();
+        let currentPoints = ThrowDice(gameNumber);
+
+        console.log(currentPoints);
+
+        throwNumber++;
+        FillPoints(currentPoints);
+    }
 })
 
-// fillBtn.addEventListener("click", (target)=>{
-//     let tmps = document.getElementsByClassName("tmpLocked");
-//     //console.log(tmps);
-//     if(tmps.length == 1){
-//         tmps[0].classList.add("locked");
-//         tmps[0].classList.remove("tmpLocked");
-//     }else{
-//         alert("selecteer maximaal 1 veld om deze score vast te zetten");
-//     }
-// })
+fillBtn.addEventListener("click", (target)=>{
+    // let tmps = document.getElementsByClassName("tmpLocked");
+    // //console.log(tmps);
+    // if(tmps.length == 1){
+    //     tmps[0].classList.add("locked");
+    //     tmps[0].classList.remove("tmpLocked");
+    // }else{
+    //     alert("selecteer maximaal 1 veld om deze score vast te zetten");
+    // }
+    nextGame();
+})
 
 function ThrowDice(game) {
     let skip = [];
@@ -159,7 +158,6 @@ function ThrowDice(game) {
             throws[i] = dice;
         }
     }
-
     console.log("Geworpen dobbelstenen:");
     console.log(throws);
     console.log();
@@ -172,6 +170,8 @@ function ThrowDice(game) {
 }
 
 function FillPoints(currentThrow) {
+    console.log(currentThrow);
+
     const throwPoints = {
         1: 0,
         2: 0,
@@ -184,8 +184,6 @@ function FillPoints(currentThrow) {
     for (i = 0; i < 5; i++) {
         throwPoints[currentThrow[i]]++;
     }
-
-    let total = 0;
 
     for(const value of Object.values(nameTable)){
         scoreTable[value].innerText = lockedScore[value];
@@ -211,6 +209,9 @@ function FillPoints(currentThrow) {
             if(!scoreTable[nameTable.lgStraight].classList.contains("locked")){
                 scoreTable[nameTable.lgStraight].innerText = 40;
             }
+            if(!scoreTable[nameTable.smStraight].classList.contains("locked")){
+                scoreTable[nameTable.smStraight].innerText = 30;
+            }
             break;
         case 2:
             if(!scoreTable[nameTable.smStraight].classList.contains("locked")){
@@ -224,10 +225,9 @@ function FillPoints(currentThrow) {
                 if(!scoreTable[nameTable.fullHouse].classList.contains("locked")){
                     scoreTable[nameTable.fullHouse].innerText = 25;
                 }
-            } else {
-                if(!scoreTable[nameTable.threeOfKind].classList.contains("locked")){
-                    scoreTable[nameTable.threeOfKind].innerText = testscore;
-                }
+            }
+            if(!scoreTable[nameTable.threeOfKind].classList.contains("locked")){
+                scoreTable[nameTable.threeOfKind].innerText = testscore;
             }
             break;
         case 4:
@@ -236,12 +236,14 @@ function FillPoints(currentThrow) {
             }
             break;
         case 5:
-            if(!scoreTable[nameTable.yahtzee].classList.contains("locked")){
-                scoreTable[nameTable.yahtzee].innerText = 50;
-            }
+            scoreTable[nameTable.yahtzee].innerText = parseInt(scoreTable[nameTable.yahtzee].innerText) + parseInt(50);
             break;
         default:
             break;
+    }
+
+    if(!scoreTable[nameTable.chance].classList.contains("locked")){
+        scoreTable[nameTable.chance].innerText = testscore;
     }
 }
 
@@ -250,18 +252,34 @@ function FillScore(scores){
     for(let field of lockedFields){
         let name = field.id;
         name = name.slice(0,-1);
-        console.log();
-        console.log(name);
-        console.log(nameTable[name]);
-        console.log();
         lockedScore[nameTable[name]] = field.innerText;
     }
-    console.log(lockedFields);
-    console.log();
-    console.log(lockedScore);
+
+    var upperTot = 0;
+    var bonus = 0;
+    var lowerTot = 0;
+
+    for(let [key,val] of Object.entries(lockedScore)){
+        if(key<=6){
+            upperTot += parseInt(val);
+        }else{
+            lowerTot += parseInt(val);
+        }
+    }
+
+    document.getElementById(`upperScore${gameNumber}`).innerText = upperTot;
+    if(upperTot >= 63){
+        bonus+=35;
+    }
+    document.getElementById(`bonus${gameNumber}`).innerText = bonus;
+    document.getElementById(`totalUpperScore${gameNumber}`).innerText = upperTot+bonus;
+    document.getElementById(`lowerScore${gameNumber}`).innerText = lowerTot;
+    document.getElementById(`upperScoreLower${gameNumber}`).innerText = upperTot+bonus;
+    document.getElementById(`grandTotal${gameNumber}`).innerText = lowerTot+bonus+upperTot;
 }
 
 function startThrowing(){
+    turnNumber++;
     throwNumber = 0;
     for(let dice of dices){
         dice.classList.remove("lockedDice");
@@ -290,6 +308,74 @@ function SmallStraight(val) {
     }
 }
 
+function tableClickEventHandler(evt){
+    var lockedClass = document.getElementsByClassName("tmpLocked");
+    if(evt.target.classList.contains("tmpLocked")){
+        evt.target.classList.remove("tmpLocked");
+    }else if(lockedClass.length > 0){
+        for (let i = 0; i < lockedClass.length; i++) {
+            lockedClass[i].classList.remove("tmpLocked");
+        }
+        evt.target.classList.toggle("tmpLocked");
+    }else{
+        evt.target.classList.add("tmpLocked");
+    }
+}
+
 function getKeyByValue(object, value) {
     return Object.keys(object).filter(key => object[key] === value);
+}
+
+function nextGame(){
+    if(gameNumber <= 5){
+        startThrowing();
+        turnNumber = 0;
+
+        lockedScore = {
+            1: 0,
+            2: 0,
+            3: 0,
+            4: 0,
+            5: 0,
+            6: 0,
+            7: 0,
+            8: 0,
+            9: 0,
+            10: 0,
+            11: 0,
+            12: 0,
+            13: 0
+        }
+
+        for(let td of Object.values(scoreTable)){
+            if(currentGameReg.test(td.id)){ //validation
+                document.getElementById(td.id).removeEventListener("click",tableClickEventHandler)
+            }
+        }
+
+        gameNumber++;
+        currentGameReg = new RegExp(`[A-z]+[${gameNumber}]`);
+        
+        scoreTable = {
+            1: document.getElementById(`aces${gameNumber}`),
+            2: document.getElementById(`twos${gameNumber}`),
+            3: document.getElementById(`threes${gameNumber}`),
+            4: document.getElementById(`fours${gameNumber}`),
+            5: document.getElementById(`fives${gameNumber}`),
+            6: document.getElementById(`sixes${gameNumber}`),
+            7: document.getElementById(`threeOfKind${gameNumber}`),
+            8: document.getElementById(`fourOfKind${gameNumber}`),
+            9: document.getElementById(`fullHouse${gameNumber}`),
+            10: document.getElementById(`smStraight${gameNumber}`),
+            11: document.getElementById(`lgStraight${gameNumber}`),
+            12: document.getElementById(`yahtzee${gameNumber}`),
+            13: document.getElementById(`chance${gameNumber}`)
+        }
+
+        for(var td of Object.values(scoreTable)){
+            if(currentGameReg.test(td.id)){ //validation
+                document.getElementById(td.id).addEventListener("click",tableClickEventHandler)
+            }
+        }
+    }
 }
