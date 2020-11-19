@@ -97,53 +97,46 @@ for (var dice of dices){
 }
 
 throwBtn.addEventListener("click", (target)=>{
-    let tmpLock = document.getElementsByClassName("tmpLocked");
-    if(tmpLock.length == 1 && throwNumber > 0){
-        tmpLock[0].classList.add("locked");
-        tmpLock[0].classList.remove("tmpLocked");
-
-        FillScore();
-        startThrowing();
-
-        let currentPoints = ThrowDice(gameNumber);
-
+    if(throwNumber === 3){
+        alert("selecteer een score om vast te houden");
+    }else if(throwNumber >= 2){
+        throwBtn.classList.add('lockedThrow')
+        this.disabled = true
+        const currentPoints = ThrowDice(gameNumber);
         throwNumber++;
         FillPoints(currentPoints);
-    }else if(throwNumber == 3){
-        alert("selecteer een score om vast te houden");
-    }else if(tmpLock.length >0 && throwNumber == 0){
-        alert("Nog niet gegooit deze beurt, maar wel een veld gevonden om de score vast te houden. \n\rVelden gewist");
-        tmpLock[0].classList.remove("tmpLocked");
-    }else{
+    }else if(throwNumber <= 3){
         const currentPoints = ThrowDice(gameNumber);
         throwNumber++;
         FillPoints(currentPoints);
     }
+
     console.log("Worp nummer: "+throwNumber.toString());
-    if(turnNumber >= 13){
-        nextGame();
-        let currentPoints = ThrowDice(gameNumber);
-
-        console.log(currentPoints);
-
-        throwNumber++;
-        FillPoints(currentPoints);
-    }
 })
 
 fillBtn.addEventListener("click", (target)=>{
-    // let tmps = document.getElementsByClassName("tmpLocked");
-    // //console.log(tmps);
-    // if(tmps.length == 1){
-    //     tmps[0].classList.add("locked");
-    //     tmps[0].classList.remove("tmpLocked");
-    // }else{
-    //     alert("selecteer maximaal 1 veld om deze score vast te zetten");
-    // }
-    nextGame();
+    let tmpLock = document.getElementsByClassName('tmpLocked');
+    if(tmpLock.length<1) return console.log('nothing to fill in');
+
+    tmpLock[0].classList.add("locked");
+    tmpLock[0].classList.remove("tmpLocked");
+
+    FillScore();
+
+    if(throwNumber === 3){
+        throwBtn.classList.remove('lockedThrow')
+        throwBtn.disabled = false
+    }
+
+    console.log(tmpLock)
+
+    if(turnNumber >= 13){
+        nextGame();
+    }
+    startThrowing();
 })
 
-function ThrowDice(game) {
+function ThrowDice() {
     let skip = [];
 
     for(let i =0; i < dices.length; i++){
@@ -158,9 +151,9 @@ function ThrowDice(game) {
             throws[i] = dice;
         }
     }
+
     console.log("Geworpen dobbelstenen:");
     console.log(throws);
-    console.log();
 
     for (i = 0; i < 5; i++) {
         document.getElementById(`dice${i + 1}`).innerHTML = diceChars[throws[i]];
@@ -170,8 +163,6 @@ function ThrowDice(game) {
 }
 
 function FillPoints(currentThrow) {
-    console.log(currentThrow);
-
     const throwPoints = {
         1: 0,
         2: 0,
@@ -184,17 +175,18 @@ function FillPoints(currentThrow) {
     for (i = 0; i < 5; i++) {
         throwPoints[currentThrow[i]]++;
     }
-
+    
     for(const value of Object.values(nameTable)){
         scoreTable[value].innerText = lockedScore[value];
     }
-
+    
     let testscore = currentThrow.reduce((a,b)=> a+b,0);
-
+    
     let highestCount = Math.max(...Object.values(throwPoints));
-    let lowestCount = 5;
+    let lowestCount = 5
 
     for (const [key, value] of Object.entries(throwPoints)) {
+        console.log(key, value)
         let score = value * key;
         if(value > 0 && value < lowestCount){
             lowestCount = value;
@@ -233,6 +225,9 @@ function FillPoints(currentThrow) {
         case 4:
             if(!scoreTable[nameTable.fourOfKind].classList.contains("locked")){
                 scoreTable[nameTable.fourOfKind].innerText = testscore;
+            }
+            if(!scoreTable[nameTable.threeOfKind].classList.contains("locked")){
+                scoreTable[nameTable.threeOfKind].innerText = testscore;
             }
             break;
         case 5:
@@ -328,7 +323,6 @@ function getKeyByValue(object, value) {
 
 function nextGame(){
     if(gameNumber <= 5){
-        startThrowing();
         turnNumber = 0;
 
         lockedScore = {

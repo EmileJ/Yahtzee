@@ -341,13 +341,18 @@ td.arrow {
 }
 
 .tmpLocked {
-    background-color: thistle;
+    background-color: rgb(153,128,128);
 }
 
 .locked {
-    background-color: tomato;
+    background-color: rgb(178,128,128);
 }
 
 .lockedDice {
     color: gray;
+}
+
+.lockedThrow {
+    color: gray;
+    border: 5px solid gray !important;
 }
