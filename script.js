@@ -1,5 +1,5 @@
 var gameNumber = 1;
-var turnNumber = 0;
+var turnNumber = 1;
 var throwNumber = 0;
 
 const diceChars = {
@@ -96,22 +96,31 @@ for (var dice of dices){
     })
 }
 
+fillBtn.disabled = true;
+fillBtn.classList.add('lockedThrow')
+
 throwBtn.addEventListener("click", (target)=>{
     if(throwNumber === 3){
         alert("selecteer een score om vast te houden");
     }else if(throwNumber >= 2){
         throwBtn.classList.add('lockedThrow')
         this.disabled = true
-        const currentPoints = ThrowDice(gameNumber);
         throwNumber++;
+        const currentPoints = ThrowDice(gameNumber);
         FillPoints(currentPoints);
     }else if(throwNumber <= 3){
-        const currentPoints = ThrowDice(gameNumber);
         throwNumber++;
+        const currentPoints = ThrowDice(gameNumber);
         FillPoints(currentPoints);
     }
 
-    console.log("Worp nummer: "+throwNumber.toString());
+    if(fillBtn.classList.contains('lockedThrow')){
+        fillBtn.disabled = false;
+        fillBtn.classList.remove('lockedThrow')
+    }
+
+    console.log(`Worp nummer: ${throwNumber}`);
+    console.log(`Beurt nummer: ${turnNumber}`)
 })
 
 fillBtn.addEventListener("click", (target)=>{
@@ -123,17 +132,25 @@ fillBtn.addEventListener("click", (target)=>{
 
     FillScore();
 
-    if(throwNumber === 3){
+    for (i = 0; i < 5; i++) {
+        document.getElementById(`dice${i + 1}`).innerHTML = diceChars[i+1];
+    }
+
+    if(throwBtn.classList.contains('lockedThrow')){
         throwBtn.classList.remove('lockedThrow')
         throwBtn.disabled = false
     }
-
-    console.log(tmpLock)
 
     if(turnNumber >= 13){
         nextGame();
     }
     startThrowing();
+
+    for(const value of Object.values(nameTable)){
+        scoreTable[value].innerText = lockedScore[value];
+    }
+    fillBtn.disabled = true;
+    fillBtn.classList.add('lockedThrow')
 })
 
 function ThrowDice() {
@@ -151,9 +168,6 @@ function ThrowDice() {
             throws[i] = dice;
         }
     }
-
-    console.log("Geworpen dobbelstenen:");
-    console.log(throws);
 
     for (i = 0; i < 5; i++) {
         document.getElementById(`dice${i + 1}`).innerHTML = diceChars[throws[i]];
@@ -186,7 +200,6 @@ function FillPoints(currentThrow) {
     let lowestCount = 5
 
     for (const [key, value] of Object.entries(throwPoints)) {
-        console.log(key, value)
         let score = value * key;
         if(value > 0 && value < lowestCount){
             lowestCount = value;
@@ -371,5 +384,7 @@ function nextGame(){
                 document.getElementById(td.id).addEventListener("click",tableClickEventHandler)
             }
         }
+    }else{
+        alert('Laad de pagina opnieuw om verder te spelen');
     }
 }
