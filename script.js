@@ -111,44 +111,23 @@ const enableButton = button => {
 
 disableButton(fillBtn)
 
-// target is not used, so no need to declare
-throwBtn.addEventListener("click", (target)=>{
-    if(throwNumber === 3){
-        // by disabling the button, it can't be clicked anymore, and this code becomes unreachable
-        alert("selecteer een score om vast te houden");
-    }else if(throwNumber >= 2){
-        throwBtn.classList.add('lockedThrow')
-        // can disable the button this way
-        throwBtn.disabled = true
-        // this.disabled = true
-        throwNumber++;
-        const currentPoints = ThrowDice(gameNumber);
-        FillPoints(currentPoints);
-    }else if(throwNumber <= 3){
-        throwNumber++;
-        const currentPoints = ThrowDice(gameNumber);
-        FillPoints(currentPoints);
-    }
+throwBtn.addEventListener("click", ()=>{
+    //     // can disable the button this way
+    //     // this.disabled = true
     // alternative shorter version:
-    // if (throwNumber >= 3) return
-    // if (throwNumber >= 2) {
-    //     disableButton(throwBtn)
-    //     throwBtn.classList.add('lockedThrow')
-    //     throwBtn.disabled = true
-    // }
-    // throwNumber++;
-    // FillPoints(ThrowDice(gameNumber));
+    if (throwNumber >= 3) return
+    if (throwNumber >= 2) disableButton(throwBtn)
+    throwNumber++;
+    FillPoints(ThrowDice());
 
-    if(fillBtn.classList.contains('lockedThrow')) enableButton(fillBtn)
+    if(fillBtn.classList.contains('lockedThrow')) enableButton(fillBtn);
     
-
     console.log(`Worp nummer: ${throwNumber}`);
-    console.log(`Beurt nummer: ${turnNumber}`)
+    console.log(`Beurt nummer: ${turnNumber}`);
 })
 
-fillBtn.addEventListener("click", (target)=>{
-    // can be const
-    let tmpLock = document.getElementsByClassName('tmpLocked');
+fillBtn.addEventListener("click", ()=>{
+    const tmpLock = document.getElementsByClassName('tmpLocked');
     if(tmpLock.length<1) return console.log('nothing to fill in');
 
     tmpLock[0].classList.add("locked");
@@ -177,26 +156,13 @@ fillBtn.addEventListener("click", (target)=>{
     fillBtn.classList.add('lockedThrow')
 })
 
-// TODO :: can do this function with only one for loop
 function ThrowDice() {
-    let skip = [];
+    for(let i = 0; i < dices.length; i++){
+        if(dices[i].classList.contains("lockedDice")) continue;
 
-    for(let i =0; i < dices.length; i++){
-        if(dices[i].classList.contains("lockedDice")){
-            skip.push(i);
-        }
-    }
-
-    for (i = 0; i < 5; i++) {
-        // TODO :: use Math.ceil
-        var dice = Math.floor(Math.random() * 6) + 1;
-        if (!skip.includes(i)) {
-            throws[i] = dice;
-        }
-    }
-
-    for (i = 0; i < 5; i++) {
-        document.getElementById(`dice${i + 1}`).innerHTML = diceChars[throws[i]];
+        const dice = Math.ceil(Math.random() * 6); 
+        throws[i] = dice
+        document.getElementById(`dice${i + 1}`).innerHTML = diceChars[dice];
     }
 
     return throws;
