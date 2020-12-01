@@ -96,15 +96,31 @@ for (var dice of dices){
     })
 }
 
-fillBtn.disabled = true;
-fillBtn.classList.add('lockedThrow')
+// two function to disable and enable buttons
+/** @param {HTMLButtonElement} button */
+const disableButton = button => {
+    button.disabled = true;
+    button.classList.add('lockedThrow')
+}
 
+/** @param {HTMLButtonElement} button */
+const enableButton = button => {
+    button.disabled = false;
+    button.classList.remove('lockedThrow')
+}
+
+disableButton(fillBtn)
+
+// target is not used, so no need to declare
 throwBtn.addEventListener("click", (target)=>{
     if(throwNumber === 3){
+        // by disabling the button, it can't be clicked anymore, and this code becomes unreachable
         alert("selecteer een score om vast te houden");
     }else if(throwNumber >= 2){
         throwBtn.classList.add('lockedThrow')
-        this.disabled = true
+        // can disable the button this way
+        throwBtn.disabled = true
+        // this.disabled = true
         throwNumber++;
         const currentPoints = ThrowDice(gameNumber);
         FillPoints(currentPoints);
@@ -113,17 +129,25 @@ throwBtn.addEventListener("click", (target)=>{
         const currentPoints = ThrowDice(gameNumber);
         FillPoints(currentPoints);
     }
+    // alternative shorter version:
+    // if (throwNumber >= 3) return
+    // if (throwNumber >= 2) {
+    //     disableButton(throwBtn)
+    //     throwBtn.classList.add('lockedThrow')
+    //     throwBtn.disabled = true
+    // }
+    // throwNumber++;
+    // FillPoints(ThrowDice(gameNumber));
 
-    if(fillBtn.classList.contains('lockedThrow')){
-        fillBtn.disabled = false;
-        fillBtn.classList.remove('lockedThrow')
-    }
+    if(fillBtn.classList.contains('lockedThrow')) enableButton(fillBtn)
+    
 
     console.log(`Worp nummer: ${throwNumber}`);
     console.log(`Beurt nummer: ${turnNumber}`)
 })
 
 fillBtn.addEventListener("click", (target)=>{
+    // can be const
     let tmpLock = document.getElementsByClassName('tmpLocked');
     if(tmpLock.length<1) return console.log('nothing to fill in');
 
@@ -153,6 +177,7 @@ fillBtn.addEventListener("click", (target)=>{
     fillBtn.classList.add('lockedThrow')
 })
 
+// TODO :: can do this function with only one for loop
 function ThrowDice() {
     let skip = [];
 
@@ -163,6 +188,7 @@ function ThrowDice() {
     }
 
     for (i = 0; i < 5; i++) {
+        // TODO :: use Math.ceil
         var dice = Math.floor(Math.random() * 6) + 1;
         if (!skip.includes(i)) {
             throws[i] = dice;
@@ -295,6 +321,10 @@ function startThrowing(){
 }
 
 function SmallStraight(val) {
+    // TODO :: to much nesting, break out earlier
+    // like this:
+    // if(!Array.isArray(val) || val.length !== 5) return false
+    
     if (Array.isArray(val) && val.length == 5) {
         var min = Math.min(...val);
         var max = Math.max(...val);
